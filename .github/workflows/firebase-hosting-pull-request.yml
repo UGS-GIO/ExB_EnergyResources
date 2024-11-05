@@ -64,17 +64,35 @@ jobs:
           head -n 5 jimu-core/init.js || echo "init.js not found"
           echo "File permissions..."
           ls -la jimu-core/*.js || echo "No js files in jimu-core"
-      - name: Update paths in index.html
-        working-directory: exb/ArcGISExperienceBuilder/app
-        run: |
-          # Remove base href since we moved files
-          sed -i 's/<base href="\.\/cdn\/14\/"\/>//' index.html
-          # Update all relative paths to absolute
-          sed -i 's/src="\.\//src="\//g' index.html
-          # Replace BASE_URL placeholder with absolute paths
-          sed -i 's|https://BASE_URL/|/|g' index.html
-          # Update API URL
-          sed -i 's|https://API_URL/|https://js.arcgis.com/4.30/|g' index.html
+          - name: Update paths in index.html
+          working-directory: exb/ArcGISExperienceBuilder/app
+          run: |
+            # Remove base href since we moved files
+            sed -i 's/<base href="\.\/cdn\/14\/"\/>//' index.html
+            
+            # Update the systemjs-importmap to use correct paths
+            sed -i 's|"jimu-core": "https://BASE_URL/jimu-core/index.js"|"jimu-core": "/jimu-core/index.js"|g' index.html
+            sed -i 's|"jimu-core/": "https://BASE_URL/jimu-core/"|"jimu-core/": "/jimu-core/"|g' index.html
+            sed -i 's|"jimu-theme": "https://BASE_URL/jimu-theme/index.js"|"jimu-theme": "/jimu-theme/index.js"|g' index.html
+            sed -i 's|"jimu-theme/": "https://BASE_URL/jimu-theme/"|"jimu-theme/": "/jimu-theme/"|g' index.html
+            sed -i 's|"jimu-ui": "https://BASE_URL/jimu-ui/index.js"|"jimu-ui": "/jimu-ui/index.js"|g' index.html
+            sed -i 's|"jimu-ui/": "https://BASE_URL/jimu-ui/"|"jimu-ui/": "/jimu-ui/"|g' index.html
+            sed -i 's|"jimu-icons/": "https://BASE_URL/jimu-icons/"|"jimu-icons/": "/jimu-icons/"|g' index.html
+            sed -i 's|"jimu-arcgis": "https://BASE_URL/jimu-arcgis/index.js"|"jimu-arcgis": "/jimu-arcgis/index.js"|g' index.html
+            sed -i 's|"jimu-arcgis/": "https://BASE_URL/jimu-arcgis/"|"jimu-arcgis/": "/jimu-arcgis/"|g' index.html
+            sed -i 's|"jimu-layouts": "https://BASE_URL/jimu-layouts/index.js"|"jimu-layouts": "/jimu-layouts/index.js"|g' index.html
+            sed -i 's|"jimu-layouts/": "https://BASE_URL/jimu-layouts/"|"jimu-layouts/": "/jimu-layouts/"|g' index.html
+            sed -i 's|"widgets/": "https://BASE_URL/widgets/"|"widgets/": "/widgets/"|g' index.html
+            sed -i 's|"themes/": "https://BASE_URL/themes/"|"themes/": "/themes/"|g' index.html
+            
+            # Update API URL
+            sed -i 's|"esri/": "https://API_URL/esri/"|"esri/": "https://js.arcgis.com/4.30/esri/"|g' index.html
+            
+            # Update other paths
+            sed -i 's/src="\.\//src="\//g' index.html
+  
+            echo "Modified index.html content:"
+            cat index.html
       - name: Debug - Verify structure
         working-directory: exb/ArcGISExperienceBuilder/app
         run: |
