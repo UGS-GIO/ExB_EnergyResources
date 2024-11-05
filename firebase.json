@@ -8,33 +8,11 @@
       ],
       "rewrites": [
         {
-          "source": "/cdn/14/**",
-          "destination": "/**"
-        },
-        {
           "source": "**",
           "destination": "/index.html"
         }
       ],
-      "headers": [
-        {
-          "source": "**/*.js",
-          "headers": [
-            {
-              "key": "Content-Type",
-              "value": "application/javascript"
-            }
-          ]
-        },
-        {
-          "source": "**/*.css",
-          "headers": [
-            {
-              "key": "Content-Type",
-              "value": "text/css"
-            }
-          ]
-        }
-      ]
+      "cleanUrls": true,
+      "trailingSlash": false
     }
   }
