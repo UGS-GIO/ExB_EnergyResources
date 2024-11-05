@@ -46,17 +46,34 @@ jobs:
           unzip -q app.zip -d app
           chmod -R 777 app
         working-directory: exb/ArcGISExperienceBuilder
+      - name: Debug - List app contents
+        run: |
+          echo "Contents of app directory:"
+          ls -la exb/ArcGISExperienceBuilder/app
+          echo "Contents of jimu-core:"
+          ls -la exb/ArcGISExperienceBuilder/app/jimu-core
+          echo "First few lines of init.js:"
+          head -n 5 exb/ArcGISExperienceBuilder/app/jimu-core/init.js
+          echo "First few lines of index.html:"
+          head -n 10 exb/ArcGISExperienceBuilder/app/index.html
+
+      - name: Check file types
+        run: |
+          echo "File type of init.js:"
+          file exb/ArcGISExperienceBuilder/app/jimu-core/init.js
+          echo "File type of index.html:"
+          file exb/ArcGISExperienceBuilder/app/index.html
       - name: Update paths in index.html
         working-directory: exb/ArcGISExperienceBuilder/app
         run: |
-          # Remove base href and update paths
-          sed -i 's/<base href="\.\/cdn\/14\/"\/>//' index.html
-          # Update the init.js path
-          sed -i 's/src="\.\/jimu-core\/init.js"/src="\/jimu-core\/init.js"/' index.html
-          # Replace BASE_URL placeholder
-          sed -i 's/https:\/\/BASE_URL\//\//g' index.html
-          # Replace API_URL placeholder
-          sed -i 's/https:\/\/API_URL\//https:\/\/js.arcgis.com\/4.30\//g' index.html
+          # Keep base href but modify it
+          sed -i 's/<base href="\.\/cdn\/14\/"/<base href="\/"/' index.html
+          # Update script paths to absolute
+          sed -i 's/src="\.\/jimu-core/src="\/jimu-core/g' index.html
+          # Replace BASE_URL placeholder with absolute paths
+          sed -i 's|https://BASE_URL/|/|g' index.html
+          # Update API URL
+          sed -i 's|https://API_URL/|https://js.arcgis.com/4.30/|g' index.html
 
       - name: Setup import paths
         working-directory: exb/ArcGISExperienceBuilder/app
