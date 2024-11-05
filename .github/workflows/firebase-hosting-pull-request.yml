@@ -16,7 +16,7 @@ jobs:
       - name: Unzip Experience Builder
         run: unzip -q exb.zip -d exb
       # - name: Copy Custom Widgets
-      #   run: cp -r widgets/* exb/ArcGISExperienceBuilder/client/your-extensions/widgets
+      # run: cp -r widgets/* exb/ArcGISExperienceBuilder/client/your-extensions/widgets
       - name: Copy Custom Themes
         run: cp -r themes/* exb/ArcGISExperienceBuilder/client/your-extensions/themes
       - name: Create App directory
@@ -46,35 +46,33 @@ jobs:
           unzip -q app.zip -d app
           chmod -R 777 app
         working-directory: exb/ArcGISExperienceBuilder
-      - name: Debug - List app contents
+      - name: Fix directory structure
+        working-directory: exb/ArcGISExperienceBuilder/app
         run: |
-          echo "Contents of app directory:"
-          ls -la exb/ArcGISExperienceBuilder/app
-          echo "Contents of jimu-core:"
-          ls -la exb/ArcGISExperienceBuilder/app/jimu-core
-          echo "First few lines of init.js:"
-          head -n 5 exb/ArcGISExperienceBuilder/app/jimu-core/init.js
-          echo "First few lines of index.html:"
-          head -n 10 exb/ArcGISExperienceBuilder/app/index.html
-
-      - name: Check file types
-        run: |
-          echo "File type of init.js:"
-          file exb/ArcGISExperienceBuilder/app/jimu-core/init.js
-          echo "File type of index.html:"
-          file exb/ArcGISExperienceBuilder/app/index.html
+          echo "Moving files from cdn directory..."
+          mv cdn/14/* .
+          rm -rf cdn
+          ls -la
       - name: Update paths in index.html
         working-directory: exb/ArcGISExperienceBuilder/app
         run: |
-          # Keep base href but modify it
-          sed -i 's/<base href="\.\/cdn\/14\/"/<base href="\/"/' index.html
-          # Update script paths to absolute
-          sed -i 's/src="\.\/jimu-core/src="\/jimu-core/g' index.html
+          # Remove base href since we moved files
+          sed -i 's/<base href="\.\/cdn\/14\/"\/>//' index.html
+          # Update all relative paths to absolute
+          sed -i 's/src="\.\//src="\//g' index.html
           # Replace BASE_URL placeholder with absolute paths
           sed -i 's|https://BASE_URL/|/|g' index.html
           # Update API URL
           sed -i 's|https://API_URL/|https://js.arcgis.com/4.30/|g' index.html
-
+      - name: Debug - Verify structure
+        working-directory: exb/ArcGISExperienceBuilder/app
+        run: |
+          echo "Current directory contents:"
+          ls -la
+          echo "Checking for jimu-core:"
+          ls -la jimu-core || echo "jimu-core not found"
+          echo "Current index.html content:"
+          cat index.html
       - name: Setup import paths
         working-directory: exb/ArcGISExperienceBuilder/app
         run: |
@@ -88,4 +86,4 @@ jobs:
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_UT_DNR_UGS_ENERGY_DEV }}
           projectId: ut-dnr-ugs-energy-dev
           channelId: preview
-          # entryPoint: exb/ArcGISExperienceBuilder/app
+          folder: exb/ArcGISExperienceBuilder/app
