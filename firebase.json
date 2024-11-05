@@ -9,7 +9,7 @@
       "rewrites": [
         {
           "source": "**",
-          "destination": "/exb/ArcGISExperienceBuilder/app/index.html"
+          "destination": "/index.html"
         }
       ]
     }
