@@ -8,6 +8,10 @@
       ],
       "rewrites": [
         {
+          "source": "**/*.js",
+          "destination": "/$1"
+        },
+        {
           "source": "**",
           "destination": "/index.html"
         }
@@ -18,7 +22,7 @@
           "headers": [
             {
               "key": "Content-Type",
-              "value": "application/javascript"
+              "value": "application/javascript; charset=utf-8"
             }
           ]
         },
@@ -30,7 +34,17 @@
               "value": "text/css"
             }
           ]
+        },
+        {
+          "source": "**/*.json",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ]
         }
-      ]
+      ],
+      "trailingSlash": false
     }
   }

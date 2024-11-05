@@ -53,6 +53,17 @@ jobs:
           mv cdn/14/* .
           rm -rf cdn
           ls -la
+      - name: Verify JavaScript files
+        working-directory: exb/ArcGISExperienceBuilder/app
+        run: |
+          echo "Checking JavaScript files..."
+          find . -name "*.js" -type f -exec file {} \;
+          echo "Checking start of react.js..."
+          head -n 5 jimu-core/react.js || echo "react.js not found"
+          echo "Checking start of init.js..."
+          head -n 5 jimu-core/init.js || echo "init.js not found"
+          echo "File permissions..."
+          ls -la jimu-core/*.js || echo "No js files in jimu-core"
       - name: Update paths in index.html
         working-directory: exb/ArcGISExperienceBuilder/app
         run: |
