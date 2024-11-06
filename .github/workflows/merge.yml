@@ -1,5 +1,8 @@
-name: Build and Deploy to Firebase Preview
-on: pull_request
+name: Build and Deploy to Firebase Production on Merge
+on:
+    push:
+      branches:
+        - master
 permissions:
   checks: write
   contents: read
@@ -47,10 +50,10 @@ jobs:
           chmod -R 777 app
         working-directory: exb/ArcGISExperienceBuilder
 
-      - name: Deploy to Firebase Preview Channel
+      - name: Deploy to Firebase Production
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_UT_DNR_UGS_ENERGY_DEV }}
-          projectId: ut-dnr-ugs-energy-dev
-          channelId: preview
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_UT_DNR_UGS_ENERGY_PROD }}
+          projectId: ut-dnr-ugs-energy-prod
+          channelId: live
